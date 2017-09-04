@@ -89,16 +89,26 @@ pipeline {
         sh "git tag rectangle-${MAJOR_VERSION}.${env.BUILD_NUMBER}"
         sh "git push origin rectangle-${MAJOR_VERSION}.${env.BUILD_NUMBER}"
       }
-    }
-    post {
-      failure {
-        emailext(
-          subject: "${env.JOBNAME} [${env.BUILD_NUMBER}] failed!",
-          body: """<p>'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Failed!":</p>
-          <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
-          to: "alert@emailaddress.com"
-        )
+      post {
+        success {
+          emailext(
+            subject: "${env.JOBNAME} [${env.BUILD_NUMBER}] Development Promoted to Master",
+            body: """<p>'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Development Promoted to Master!":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+            to: "alert@emailaddress.com"
+          )
+        }
       }
+    }
+  }
+  post {
+    failure {
+      emailext(
+        subject: "${env.JOBNAME} [${env.BUILD_NUMBER}] failed!",
+        body: """<p>'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Failed!":</p>
+        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+        to: "alert@emailaddress.com"
+      )
     }
   }
 }
