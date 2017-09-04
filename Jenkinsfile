@@ -90,5 +90,15 @@ pipeline {
         sh "git push origin rectangle-${MAJOR_VERSION}.${env.BUILD_NUMBER}"
       }
     }
+    post {
+      failure {
+        emailext(
+          subject: "${env.JOBNAME} [${env.BUILD_NUMBER}] failed!",
+          body: """<p>'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Failed!":</p>
+          <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+          to: "alert@emailaddress.com"
+        )
+      }
+    }
   }
 }
